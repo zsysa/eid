@@ -1,3 +1,4 @@
+// تم استرجاع التنسيق الكامل كما كان قبل تعديل الخروف المتمرجح
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -153,6 +154,7 @@
 <body>
   <div class="sheep-hint" id="sheepHint">حاول تمسك الخروف الصح 🐑</div>
   <div id="sheepContainer"></div>
+
   <div class="scroll" id="scrollMsg" onclick="openMessage()">
     <span>
       <iframe class="youtube" src="https://www.youtube.com/embed/AbU6Bg-6y5o" allowfullscreen></iframe>
@@ -160,10 +162,13 @@
       <div class="from-text">من أحمد الزهراني</div>
     </span>
   </div>
+
   <div class="open-hint" id="openHint">افتح الرسالة 👇</div>
   <div id="flash" class="flash" style="display: none;"></div>
+
   <audio id="explosionSound" src="https://www.soundjay.com/button/sounds/explosion-01.mp3" preload="auto"></audio>
   <audio id="eidSound" src="https://cdn.pixabay.com/download/audio/2022/07/19/audio_b982013238.mp3" preload="auto"></audio>
+
   <script>
     for (let i = 0; i < 150; i++) {
       let b = document.createElement('div');
@@ -173,16 +178,20 @@
       b.style.animationDelay = (Math.random() * 2) + 's';
       document.body.appendChild(b);
     }
+
     setTimeout(() => {
       document.querySelectorAll('.balloon').forEach(el => el.remove());
       showSheepGame();
     }, 5000);
+
     function showSheepGame() {
       const container = document.getElementById('sheepContainer');
       const hint = document.getElementById('sheepHint');
       hint.style.display = 'block';
+
       let totalSheep = 5;
       let sheepList = [];
+
       for (let i = 0; i < totalSheep; i++) {
         let sheep = document.createElement('div');
         sheep.className = 'sheep';
@@ -191,6 +200,7 @@
         container.appendChild(sheep);
         sheepList.push(sheep);
         moveSheepRandomly(sheep);
+
         sheep.addEventListener('click', () => {
           if (sheepList.length === 1) {
             sheep.remove();
@@ -203,24 +213,29 @@
         });
       }
     }
+
     function moveSheepRandomly(sheep) {
       setInterval(() => {
         sheep.style.top = Math.random() * 80 + '%';
         sheep.style.left = Math.random() * 80 + '%';
       }, 700);
     }
+
     function triggerExplosion() {
       const boom = document.getElementById('explosionSound');
       const eid = document.getElementById('eidSound');
       boom.play();
       eid.play();
       document.body.classList.add('shake');
+
       const flash = document.getElementById('flash');
       flash.style.display = 'block';
+
       setTimeout(() => {
         document.body.classList.remove('shake');
         flash.style.display = 'none';
       }, 500);
+
       for (let i = 0; i < 40; i++) {
         setTimeout(() => {
           let fw = document.createElement('div');
@@ -231,11 +246,13 @@
           setTimeout(() => fw.remove(), 1200);
         }, i * 40);
       }
+
       setTimeout(() => {
         document.getElementById('scrollMsg').style.display = 'block';
         document.getElementById('openHint').style.display = 'block';
       }, 1800);
     }
+
     function openMessage() {
       const scroll = document.getElementById('scrollMsg');
       scroll.classList.add('open');
