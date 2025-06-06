@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تهنئة العيد</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #fef5e7;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      transition: background 0.5s ease-in-out;
+    }
+    .shake {
+      animation: shake 0.5s;
+    }
+    @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      10% { transform: translate(-1px, -2px) rotate(-1deg); }
+      20% { transform: translate(-3px, 0px) rotate(1deg); }
+      30% { transform: translate(3px, 2px) rotate(0deg); }
+      40% { transform: translate(1px, -1px) rotate(1deg); }
+      50% { transform: translate(-1px, 2px) rotate(-1deg); }
+      60% { transform: translate(-3px, 1px) rotate(0deg); }
+      70% { transform: translate(3px, 1px) rotate(-1deg); }
+      80% { transform: translate(-1px, -1px) rotate(1deg); }
+      90% { transform: translate(1px, 2px) rotate(0deg); }
+      100% { transform: translate(1px, -2px) rotate(-1deg); }
+    }
+    .flash {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: white;
+      opacity: 0;
+      z-index: 9999;
+      pointer-events: none;
+      animation: flashEffect 0.5s ease-out;
+    }
+    @keyframes flashEffect {
+      0% { opacity: 0.9; }
+      100% { opacity: 0; }
+    }
+    .balloon {
+      position: absolute;
+      bottom: -100px;
+      width: 40px;
+      height: 60px;
+      background-color: red;
+      border-radius: 50% 50% 0 0;
+      animation: floatUp 5s linear forwards;
+      opacity: 0.8;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+      100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+    }
+    .sheep {
+      display: none;
+      position: absolute;
+      font-size: 12vw;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .sheep-hint {
+      display: none;
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.5em;
+      color: #8b5e3c;
+      z-index: 11;
+    }
+    .scroll {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80vw;
+      max-width: 400px;
+      height: 80px;
+      background: #e6d7b3;
+      border: 3px solid #8b5e3c;
+      border-radius: 15px;
+      box-shadow: 0 0 10px #aaa;
+      cursor: pointer;
+      transition: all 0.6s ease-in-out;
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 20px;
+      z-index: 20;
+    }
+    .scroll.open {
+      height: auto;
+      min-height: 300px;
+      background-color: #fff3cd;
+      white-space: normal;
+      overflow-y: auto;
+    }
+    .scroll span {
+      font-size: 1.2em;
+      color: #5c3317;
+      opacity: 0;
+      transition: opacity 1s ease-in;
+      display: block;
+      line-height: 1.8;
+      margin-top: 15px;
+    }
+    .scroll.open span {
+      opacity: 1;
+    }
+    .from-text {
+      text-align: right;
+      font-weight: bold;
+      margin-top: 20px;
+      margin-right: 10px;
+      color: #5c3317;
+    }
+    .youtube {
+      width: 100%;
+      height: 200px;
+      border: none;
+      border-radius: 10px;
+    }
+    .firework {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: gold;
+      border-radius: 50%;
+      animation: explode 1.2s ease-out forwards;
+    }
+    @keyframes explode {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(5); opacity: 0; }
+    }
+    .open-hint {
+      display: none;
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.4em;
+      color: #5c3317;
+      z-index: 21;
+    }
+  </style>
+</head>
+<body>
+  <div class="sheep-hint" id="sheepHint">حاول تمسك الخروف الصح 🐑</div>
+  <div id="sheepContainer"></div>
+  <div class="scroll" id="scrollMsg" onclick="openMessage()">
+    <span>
+      <iframe class="youtube" src="https://www.youtube.com/embed/AbU6Bg-6y5o" allowfullscreen></iframe>
+      <div>عيد أضحى مبارك 🎉🐑<br>كل عام وأنتم بخير وصحة وسلامة</div>
+      <div class="from-text">من أحمد الزهراني</div>
+    </span>
+  </div>
+  <div class="open-hint" id="openHint">افتح الرسالة 👇</div>
+  <div id="flash" class="flash" style="display: none;"></div>
+  <audio id="explosionSound" src="https://www.soundjay.com/button/sounds/explosion-01.mp3" preload="auto"></audio>
+  <audio id="eidSound" src="https://cdn.pixabay.com/download/audio/2022/07/19/audio_b982013238.mp3" preload="auto"></audio>
+  <script>
+    for (let i = 0; i < 150; i++) {
+      let b = document.createElement('div');
+      b.className = 'balloon';
+      b.style.left = Math.random() * 100 + '%';
+      b.style.backgroundColor = `hsl(${Math.random() * 360}, 80%, 70%)`;
+      b.style.animationDelay = (Math.random() * 2) + 's';
+      document.body.appendChild(b);
+    }
+    setTimeout(() => {
+      document.querySelectorAll('.balloon').forEach(el => el.remove());
+      showSheepGame();
+    }, 5000);
+    function showSheepGame() {
+      const container = document.getElementById('sheepContainer');
+      const hint = document.getElementById('sheepHint');
+      hint.style.display = 'block';
+      let totalSheep = 5;
+      let sheepList = [];
+      for (let i = 0; i < totalSheep; i++) {
+        let sheep = document.createElement('div');
+        sheep.className = 'sheep';
+        sheep.innerText = '🐑';
+        sheep.style.display = 'block';
+        container.appendChild(sheep);
+        sheepList.push(sheep);
+        moveSheepRandomly(sheep);
+        sheep.addEventListener('click', () => {
+          if (sheepList.length === 1) {
+            sheep.remove();
+            hint.style.display = 'none';
+            triggerExplosion();
+          } else {
+            sheep.remove();
+            sheepList = sheepList.filter(s => s !== sheep);
+          }
+        });
+      }
+    }
+    function moveSheepRandomly(sheep) {
+      setInterval(() => {
+        sheep.style.top = Math.random() * 80 + '%';
+        sheep.style.left = Math.random() * 80 + '%';
+      }, 700);
+    }
+    function triggerExplosion() {
+      const boom = document.getElementById('explosionSound');
+      const eid = document.getElementById('eidSound');
+      boom.play();
+      eid.play();
+      document.body.classList.add('shake');
+      const flash = document.getElementById('flash');
+      flash.style.display = 'block';
+      setTimeout(() => {
+        document.body.classList.remove('shake');
+        flash.style.display = 'none';
+      }, 500);
+      for (let i = 0; i < 40; i++) {
+        setTimeout(() => {
+          let fw = document.createElement('div');
+          fw.className = 'firework';
+          fw.style.top = Math.random() * 100 + '%';
+          fw.style.left = Math.random() * 100 + '%';
+          document.body.appendChild(fw);
+          setTimeout(() => fw.remove(), 1200);
+        }, i * 40);
+      }
+      setTimeout(() => {
+        document.getElementById('scrollMsg').style.display = 'block';
+        document.getElementById('openHint').style.display = 'block';
+      }, 1800);
+    }
+    function openMessage() {
+      const scroll = document.getElementById('scrollMsg');
+      scroll.classList.add('open');
+      document.getElementById('openHint').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
